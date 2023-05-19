@@ -1,0 +1,23 @@
+{
+  "name": "@noir-lang/acvm-simulator",
+  "collaborators": [
+    "The Noir Team <team@noir-lang.org>"
+  ],
+  "version": "0.0.0-9394575",
+  "files": [
+    "nodejs",
+    "web",
+    "package.json"
+  ],
+  "main": "./nodejs/acvm_simulator.js",
+  "types": "./web/acvm_simulator.d.ts",
+  "module": "./web/acvm_simulator.js",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/noir-lang/acvm-simulator-wasm.git"
+  },
+  "acvm": {
+    "versionHash": "9394575240650f8198f727cd26329cf80a9e63c8"
+  }
+}
