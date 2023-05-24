@@ -3,12 +3,6 @@ imports['__wbindgen_placeholder__'] = module.exports;
 let wasm;
 const { TextDecoder, TextEncoder } = require(`util`);
 
-const heap = new Array(128).fill(undefined);
-
-heap.push(undefined, null, true, false);
-
-function getObject(idx) { return heap[idx]; }
-
 let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
 
 cachedTextDecoder.decode();
@@ -27,6 +21,10 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
 
+const heap = new Array(128).fill(undefined);
+
+heap.push(undefined, null, true, false);
+
 let heap_next = heap.length;
 
 function addHeapObject(obj) {
@@ -37,6 +35,8 @@ function addHeapObject(obj) {
     heap[idx] = obj;
     return idx;
 }
+
+function getObject(idx) { return heap[idx]; }
 
 function dropObject(idx) {
     if (idx < 132) return;
@@ -198,25 +198,6 @@ module.exports.abiDecode = function(abi, witness_map) {
     }
 };
 
-function passArray8ToWasm0(arg, malloc) {
-    const ptr = malloc(arg.length * 1) >>> 0;
-    getUint8Memory0().set(arg, ptr / 1);
-    WASM_VECTOR_LEN = arg.length;
-    return ptr;
-}
-/**
-* @param {Uint8Array} circuit
-* @param {WitnessMap} initial_witness
-* @param {Function} oracle_resolver
-* @returns {Promise<WitnessMap>}
-*/
-module.exports.executeCircuit = function(circuit, initial_witness, oracle_resolver) {
-    const ptr0 = passArray8ToWasm0(circuit, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.executeCircuit(ptr0, len0, addHeapObject(initial_witness), addHeapObject(oracle_resolver));
-    return takeObject(ret);
-};
-
 /**
 * @param {string} level
 */
@@ -229,14 +210,31 @@ module.exports.init_log_level = function(level) {
 /**
 * @returns {any}
 */
-module.exports.build_info = function() {
-    const ret = wasm.build_info();
+module.exports.buildInfo = function() {
+    const ret = wasm.buildInfo();
     return takeObject(ret);
 };
 
-function __wbg_adapter_30(arg0, arg1, arg2, arg3) {
-    wasm.wasm_bindgen__convert__closures__invoke2_mut__h86e4e0c930314a36(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1) >>> 0;
+    getUint8Memory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
 }
+/**
+* Executes an ACIR circuit to generate the solved witness from the initial witness.
+*
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} initial_witness - The initial witness map defining all of the inputs to `circuit`..
+* @param {OracleCallback} oracle_callback - A callback to process oracle calls from the circuit.
+* @returns {WitnessMap} The solved witness calculated by executing the circuit on the provided inputs.
+*/
+module.exports.executeCircuit = function(circuit, initial_witness, oracle_callback) {
+    const ptr0 = passArray8ToWasm0(circuit, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.executeCircuit(ptr0, len0, addHeapObject(initial_witness), addHeapObject(oracle_callback));
+    return takeObject(ret);
+};
 
 function handleError(f, args) {
     try {
@@ -245,18 +243,18 @@ function handleError(f, args) {
         wasm.__wbindgen_exn_store(addHeapObject(e));
     }
 }
-function __wbg_adapter_69(arg0, arg1, arg2, arg3) {
+function __wbg_adapter_64(arg0, arg1, arg2, arg3) {
     wasm.wasm_bindgen__convert__closures__invoke2_mut__h3a238237c2839e9f(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
-
-module.exports.__wbindgen_is_undefined = function(arg0) {
-    const ret = getObject(arg0) === undefined;
-    return ret;
-};
 
 module.exports.__wbindgen_string_new = function(arg0, arg1) {
     const ret = getStringFromWasm0(arg0, arg1);
     return addHeapObject(ret);
+};
+
+module.exports.__wbindgen_is_undefined = function(arg0) {
+    const ret = getObject(arg0) === undefined;
+    return ret;
 };
 
 module.exports.__wbindgen_is_null = function(arg0) {
@@ -266,24 +264,6 @@ module.exports.__wbindgen_is_null = function(arg0) {
 
 module.exports.__wbindgen_object_drop_ref = function(arg0) {
     takeObject(arg0);
-};
-
-module.exports.__wbg_forEach_c1ea198d0296d90b = function(arg0, arg1, arg2) {
-    try {
-        var state0 = {a: arg1, b: arg2};
-        var cb0 = (arg0, arg1) => {
-            const a = state0.a;
-            state0.a = 0;
-            try {
-                return __wbg_adapter_30(a, state0.b, arg0, arg1);
-            } finally {
-                state0.a = a;
-            }
-        };
-        getObject(arg0).forEach(cb0);
-    } finally {
-        state0.a = state0.b = 0;
-    }
 };
 
 module.exports.__wbindgen_string_get = function(arg0, arg1) {
@@ -315,13 +295,6 @@ module.exports.__wbindgen_cb_drop = function(arg0) {
     return ret;
 };
 
-module.exports.__wbindgen_number_get = function(arg0, arg1) {
-    const obj = getObject(arg1);
-    const ret = typeof(obj) === 'number' ? obj : undefined;
-    getFloat64Memory0()[arg0 / 8 + 1] = isLikeNone(ret) ? 0 : ret;
-    getInt32Memory0()[arg0 / 4 + 0] = !isLikeNone(ret);
-};
-
 module.exports.__wbg_new_e98a840d499496b9 = function() {
     const ret = new Map();
     return addHeapObject(ret);
@@ -332,9 +305,11 @@ module.exports.__wbindgen_number_new = function(arg0) {
     return addHeapObject(ret);
 };
 
-module.exports.__wbg_set_903a5317d4b64df9 = function(arg0, arg1, arg2) {
-    const ret = getObject(arg0).set(getObject(arg1), getObject(arg2));
-    return addHeapObject(ret);
+module.exports.__wbindgen_number_get = function(arg0, arg1) {
+    const obj = getObject(arg1);
+    const ret = typeof(obj) === 'number' ? obj : undefined;
+    getFloat64Memory0()[arg0 / 8 + 1] = isLikeNone(ret) ? 0 : ret;
+    getInt32Memory0()[arg0 / 4 + 0] = !isLikeNone(ret);
 };
 
 module.exports.__wbg_new_abda76e883ba8a5f = function() {
@@ -421,6 +396,29 @@ module.exports.__wbg_call_9bd285d5c6e3f912 = function() { return handleError(fun
     return addHeapObject(ret);
 }, arguments) };
 
+module.exports.__wbg_forEach_03fb50e844f370a0 = function(arg0, arg1, arg2) {
+    try {
+        var state0 = {a: arg1, b: arg2};
+        var cb0 = (arg0, arg1) => {
+            const a = state0.a;
+            state0.a = 0;
+            try {
+                return __wbg_adapter_64(a, state0.b, arg0, arg1);
+            } finally {
+                state0.a = a;
+            }
+        };
+        getObject(arg0).forEach(cb0);
+    } finally {
+        state0.a = state0.b = 0;
+    }
+};
+
+module.exports.__wbg_set_6c1b2b7b73337778 = function(arg0, arg1, arg2) {
+    const ret = getObject(arg0).set(getObject(arg1), getObject(arg2));
+    return addHeapObject(ret);
+};
+
 module.exports.__wbg_new_113855d7ab252420 = function(arg0, arg1) {
     try {
         var state0 = {a: arg0, b: arg1};
@@ -428,7 +426,7 @@ module.exports.__wbg_new_113855d7ab252420 = function(arg0, arg1) {
             const a = state0.a;
             state0.a = 0;
             try {
-                return __wbg_adapter_69(a, state0.b, arg0, arg1);
+                return __wbg_adapter_64(a, state0.b, arg0, arg1);
             } finally {
                 state0.a = a;
             }
@@ -469,8 +467,8 @@ module.exports.__wbindgen_throw = function(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };
 
-module.exports.__wbindgen_closure_wrapper463 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 126, __wbg_adapter_24);
+module.exports.__wbindgen_closure_wrapper453 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 122, __wbg_adapter_24);
     return addHeapObject(ret);
 };
 
