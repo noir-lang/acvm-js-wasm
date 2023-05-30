@@ -46,7 +46,7 @@ jobs:
 
       - name: Build with Nix
         run: |
-          nix build github:noir-lang/acvm-simulator?rev=${{ env.SIMULATOR_REV_SHORT }}
+          nix build github:noir-lang/acvm-simulator/jb-nix-flake
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
