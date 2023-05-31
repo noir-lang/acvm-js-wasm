@@ -48,11 +48,16 @@ jobs:
         run: |
           nix build github:noir-lang/acvm-simulator/jb-nix-flake
 
+      - name: Resolve symbolic link
+        run: |
+          realpath ./result > result_path.txt
+          echo "RESULT_PATH=$(cat result_path.txt)" >> $GITHUB_ENV
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: release-artifact
-          path: ./result
+          path: ${{ env.RESULT_PATH }}
 
       - name: Configure git
         run: |
