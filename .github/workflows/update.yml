@@ -8,7 +8,7 @@ on:
         required: false
   push:
     branches:
-      - "jb-nix-flake"
+      - "**"
 
 jobs:
   update-and-publish:
@@ -46,12 +46,11 @@ jobs:
 
       - name: Build with Nix
         run: |
-          nix build github:noir-lang/acvm-simulator/jb-nix-flake
+          nix build github:noir-lang/acvm-simulator/${{ github.ref }}
 
       - name: Resolve symbolic link
         run: |
-          realpath ./result > result_path.txt
-          echo "RESULT_PATH=$(cat result_path.txt)" >> $GITHUB_ENV
+          echo "RESULT_PATH=$(readlink result)" >> $GITHUB_ENV
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
