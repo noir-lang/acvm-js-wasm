@@ -65,6 +65,7 @@ jobs:
 
       - name: Commit updates
         run: |
+          git branch -D testing-branch
           git checkout -B testing-branch
           git add .
           git commit -m "tracking acvm-simulator@${{ env.SIMULATOR_REV_SHORT }}"
