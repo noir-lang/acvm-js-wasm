@@ -65,7 +65,9 @@ jobs:
 
       - name: Commit updates
         run: |
-          git branch -D testing-branch
+          if git show-ref --verify --quiet refs/heads/testing-branch; then
+            git branch -D testing-branch
+          fi
           git checkout -B testing-branch
           git add .
           git commit -m "tracking acvm-simulator@${{ env.SIMULATOR_REV_SHORT }}"
