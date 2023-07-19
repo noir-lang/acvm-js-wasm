@@ -1,4 +1,4 @@
 # ACVM Simulator WASM JavaScript Package
 
 ## Tracks
-ACVM Simulator Repository [noir-lang/acvm-simulator@c79d0e9](https://github.com/noir-lang/acvm-simulator/tree/c79d0e93a73bf0f9de7a1991cd74abcee66b215d)
+ACVM Simulator Repository [noir-lang/acvm-simulator@7f49911](https://github.com/noir-lang/acvm-simulator/tree/7f49911a0290e00a034f4a83bc93ce3d77a1c0e4)
