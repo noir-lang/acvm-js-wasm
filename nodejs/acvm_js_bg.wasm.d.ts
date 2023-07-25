@@ -1,14 +1,14 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export function getReturnWitness(a: number, b: number, c: number, d: number): void;
+export function getPublicParametersWitness(a: number, b: number, c: number, d: number): void;
+export function getPublicWitness(a: number, b: number, c: number, d: number): void;
 export function buildInfo(): number;
 export function compressWitness(a: number, b: number): void;
 export function decompressWitness(a: number, b: number, c: number): void;
 export function executeCircuit(a: number, b: number, c: number, d: number): number;
 export function initLogLevel(a: number): void;
-export function getReturnWitness(a: number, b: number, c: number, d: number): void;
-export function getPublicParametersWitness(a: number, b: number, c: number, d: number): void;
-export function getPublicWitness(a: number, b: number, c: number, d: number): void;
 export function __wbg_trap_free(a: number): void;
 export function trap___wbgd_downcast_token(): number;
 export function __wbindgen_malloc(a: number): number;
