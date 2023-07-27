@@ -1,39 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's return values.
-*
-* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
-* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
-* @returns {WitnessMap} A witness map containing the circuit's return values.
-* @param {Uint8Array} circuit
-* @param {WitnessMap} witness_map
-* @returns {WitnessMap}
-*/
-export function getReturnWitness(circuit: Uint8Array, witness_map: WitnessMap): WitnessMap;
-/**
-* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public parameters.
-*
-* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
-* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
-* @returns {WitnessMap} A witness map containing the circuit's public parameters.
-* @param {Uint8Array} circuit
-* @param {WitnessMap} solved_witness
-* @returns {WitnessMap}
-*/
-export function getPublicParametersWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
-/**
-* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public inputs.
-*
-* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
-* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
-* @returns {WitnessMap} A witness map containing the circuit's public inputs.
-* @param {Uint8Array} circuit
-* @param {WitnessMap} solved_witness
-* @returns {WitnessMap}
-*/
-export function getPublicWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
-/**
 * Returns the `BuildInfo` object containing information about how the installed package was built.
 * @returns {BuildInfo} - Information on how the installed package was built.
 */
@@ -67,20 +34,39 @@ export function executeCircuit(circuit: Uint8Array, initial_witness: WitnessMap,
 * @param {LogLevel} level - The maximum level of logging to be emitted.
 */
 export function initLogLevel(level: LogLevel): void;
-
-export type ForeignCallInput = string[]
-export type ForeignCallOutput = string | string[]
-
 /**
-* A callback which performs an foreign call and returns the response.
-* @callback ForeignCallHandler
-* @param {string} name - The identifier for the type of foreign call being performed.
-* @param {string[][]} inputs - An array of hex encoded inputs to the foreign call.
-* @returns {Promise<string[]>} outputs - An array of hex encoded outputs containing the results of the foreign call.
+* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's return values.
+*
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
+* @returns {WitnessMap} A witness map containing the circuit's return values.
+* @param {Uint8Array} circuit
+* @param {WitnessMap} witness_map
+* @returns {WitnessMap}
 */
-export type ForeignCallHandler = (name: string, inputs: ForeignCallInput[]) => Promise<ForeignCallOutput[]>;
-
-
+export function getReturnWitness(circuit: Uint8Array, witness_map: WitnessMap): WitnessMap;
+/**
+* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public parameters.
+*
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
+* @returns {WitnessMap} A witness map containing the circuit's public parameters.
+* @param {Uint8Array} circuit
+* @param {WitnessMap} solved_witness
+* @returns {WitnessMap}
+*/
+export function getPublicParametersWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
+/**
+* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public inputs.
+*
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
+* @returns {WitnessMap} A witness map containing the circuit's public inputs.
+* @param {Uint8Array} circuit
+* @param {WitnessMap} solved_witness
+* @returns {WitnessMap}
+*/
+export function getPublicWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
 
 /**
 * @typedef {Object} BuildInfo - Information about how the installed package was built
@@ -97,6 +83,20 @@ export type BuildInfo = {
 
 
 export type LogLevel = "OFF" | "ERROR" | "WARN" | "INFO" | "DEBUG" | "TRACE";
+
+
+
+export type ForeignCallInput = string[]
+export type ForeignCallOutput = string | string[]
+
+/**
+* A callback which performs an foreign call and returns the response.
+* @callback ForeignCallHandler
+* @param {string} name - The identifier for the type of foreign call being performed.
+* @param {string[][]} inputs - An array of hex encoded inputs to the foreign call.
+* @returns {Promise<string[]>} outputs - An array of hex encoded outputs containing the results of the foreign call.
+*/
+export type ForeignCallHandler = (name: string, inputs: ForeignCallInput[]) => Promise<ForeignCallOutput[]>;
 
 
 

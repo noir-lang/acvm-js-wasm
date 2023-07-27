@@ -3,7 +3,7 @@
   "collaborators": [
     "The Noir Team <team@noir-lang.org>"
   ],
-  "version": "0.0.0-3cc4575",
+  "version": "0.0.0-d576736",
   "files": [
     "nodejs",
     "web",
@@ -18,6 +18,6 @@
     "url": "https://github.com/noir-lang/acvm-simulator-wasm.git"
   },
   "acvm": {
-    "versionHash": "ceaf5fe4f45ac3d6bf4f5d7657aa7a42dafc5429"
+    "versionHash": "d576736b714ee130ccfa2e25ceb6a785676ed1e1"
   }
 }

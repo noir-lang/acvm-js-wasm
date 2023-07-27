@@ -1,39 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's return values.
-*
-* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
-* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
-* @returns {WitnessMap} A witness map containing the circuit's return values.
-* @param {Uint8Array} circuit
-* @param {WitnessMap} witness_map
-* @returns {WitnessMap}
-*/
-export function getReturnWitness(circuit: Uint8Array, witness_map: WitnessMap): WitnessMap;
-/**
-* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public parameters.
-*
-* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
-* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
-* @returns {WitnessMap} A witness map containing the circuit's public parameters.
-* @param {Uint8Array} circuit
-* @param {WitnessMap} solved_witness
-* @returns {WitnessMap}
-*/
-export function getPublicParametersWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
-/**
-* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public inputs.
-*
-* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
-* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
-* @returns {WitnessMap} A witness map containing the circuit's public inputs.
-* @param {Uint8Array} circuit
-* @param {WitnessMap} solved_witness
-* @returns {WitnessMap}
-*/
-export function getPublicWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
-/**
 * Returns the `BuildInfo` object containing information about how the installed package was built.
 * @returns {BuildInfo} - Information on how the installed package was built.
 */
@@ -67,20 +34,39 @@ export function executeCircuit(circuit: Uint8Array, initial_witness: WitnessMap,
 * @param {LogLevel} level - The maximum level of logging to be emitted.
 */
 export function initLogLevel(level: LogLevel): void;
-
-export type ForeignCallInput = string[]
-export type ForeignCallOutput = string | string[]
-
 /**
-* A callback which performs an foreign call and returns the response.
-* @callback ForeignCallHandler
-* @param {string} name - The identifier for the type of foreign call being performed.
-* @param {string[][]} inputs - An array of hex encoded inputs to the foreign call.
-* @returns {Promise<string[]>} outputs - An array of hex encoded outputs containing the results of the foreign call.
+* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's return values.
+*
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
+* @returns {WitnessMap} A witness map containing the circuit's return values.
+* @param {Uint8Array} circuit
+* @param {WitnessMap} witness_map
+* @returns {WitnessMap}
 */
-export type ForeignCallHandler = (name: string, inputs: ForeignCallInput[]) => Promise<ForeignCallOutput[]>;
-
-
+export function getReturnWitness(circuit: Uint8Array, witness_map: WitnessMap): WitnessMap;
+/**
+* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public parameters.
+*
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
+* @returns {WitnessMap} A witness map containing the circuit's public parameters.
+* @param {Uint8Array} circuit
+* @param {WitnessMap} solved_witness
+* @returns {WitnessMap}
+*/
+export function getPublicParametersWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
+/**
+* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public inputs.
+*
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
+* @returns {WitnessMap} A witness map containing the circuit's public inputs.
+* @param {Uint8Array} circuit
+* @param {WitnessMap} solved_witness
+* @returns {WitnessMap}
+*/
+export function getPublicWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
 
 /**
 * @typedef {Object} BuildInfo - Information about how the installed package was built
@@ -97,6 +83,20 @@ export type BuildInfo = {
 
 
 export type LogLevel = "OFF" | "ERROR" | "WARN" | "INFO" | "DEBUG" | "TRACE";
+
+
+
+export type ForeignCallInput = string[]
+export type ForeignCallOutput = string | string[]
+
+/**
+* A callback which performs an foreign call and returns the response.
+* @callback ForeignCallHandler
+* @param {string} name - The identifier for the type of foreign call being performed.
+* @param {string[][]} inputs - An array of hex encoded inputs to the foreign call.
+* @returns {Promise<string[]>} outputs - An array of hex encoded outputs containing the results of the foreign call.
+*/
+export type ForeignCallHandler = (name: string, inputs: ForeignCallInput[]) => Promise<ForeignCallOutput[]>;
 
 
 
@@ -119,24 +119,24 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly getReturnWitness: (a: number, b: number, c: number, d: number) => void;
-  readonly getPublicParametersWitness: (a: number, b: number, c: number, d: number) => void;
-  readonly getPublicWitness: (a: number, b: number, c: number, d: number) => void;
   readonly buildInfo: () => number;
   readonly compressWitness: (a: number, b: number) => void;
   readonly decompressWitness: (a: number, b: number, c: number) => void;
   readonly executeCircuit: (a: number, b: number, c: number, d: number) => number;
   readonly initLogLevel: (a: number) => void;
+  readonly getReturnWitness: (a: number, b: number, c: number, d: number) => void;
+  readonly getPublicParametersWitness: (a: number, b: number, c: number, d: number) => void;
+  readonly getPublicWitness: (a: number, b: number, c: number, d: number) => void;
   readonly __wbg_trap_free: (a: number) => void;
   readonly trap___wbgd_downcast_token: () => number;
-  readonly __wbindgen_malloc: (a: number) => number;
-  readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
+  readonly __wbindgen_malloc: (a: number, b: number) => number;
+  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h0992bb46c645b640: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h18056f46f15b032f: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
-  readonly __wbindgen_free: (a: number, b: number) => void;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
-  readonly wasm_bindgen__convert__closures__invoke2_mut__h9bdbe8aa9b00c217: (a: number, b: number, c: number, d: number) => void;
+  readonly wasm_bindgen__convert__closures__invoke2_mut__h10c7a4363b59f792: (a: number, b: number, c: number, d: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
