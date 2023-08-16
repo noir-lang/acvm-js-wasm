@@ -6,6 +6,19 @@
 */
 export function buildInfo(): BuildInfo;
 /**
+* @returns {Promise<SimulatedBackend>}
+*/
+export function newSimulatedBackend(): Promise<SimulatedBackend>;
+/**
+* Executes an ACIR circuit to generate the solved witness from the initial witness.
+*
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} initial_witness - The initial witness map defining all of the inputs to `circuit`..
+* @param {ForeignCallHandler} foreign_call_handler - A callback to process any foreign calls from the circuit.
+* @returns {WitnessMap} The solved witness calculated by executing the circuit on the provided inputs.
+*/
+export function executeCircuit(backend: SimulatedBackend, circuit: Uint8Array, initial_witness: WitnessMap, foreign_call_handler: ForeignCallHandler): Promise<WitnessMap>;
+/**
 * Compresses a `WitnessMap` into the binary format outputted by Nargo.
 *
 * @param {Uint8Array} compressed_witness - A witness map.
@@ -19,15 +32,6 @@ export function compressWitness(witness_map: WitnessMap): Uint8Array;
 * @returns {WitnessMap} The decompressed witness map.
 */
 export function decompressWitness(compressed_witness: Uint8Array): WitnessMap;
-/**
-* Executes an ACIR circuit to generate the solved witness from the initial witness.
-*
-* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
-* @param {WitnessMap} initial_witness - The initial witness map defining all of the inputs to `circuit`..
-* @param {ForeignCallHandler} foreign_call_handler - A callback to process any foreign calls from the circuit.
-* @returns {WitnessMap} The solved witness calculated by executing the circuit on the provided inputs.
-*/
-export function executeCircuit(circuit: Uint8Array, initial_witness: WitnessMap, foreign_call_handler: ForeignCallHandler): Promise<WitnessMap>;
 /**
 * Sets the package's logging level.
 *
@@ -68,21 +72,8 @@ export function getPublicParametersWitness(circuit: Uint8Array, solved_witness: 
 */
 export function getPublicWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
 
-/**
-* @typedef {Object} BuildInfo - Information about how the installed package was built
-* @property {string} gitHash - The hash of the git commit from which the package was built. 
-* @property {string} version - The version of the package at the built git commit.
-* @property {boolean} dirty - Whether the package contained uncommitted changes when built.
- */
-export type BuildInfo = {
-  gitHash: string;
-  version: string;
-  dirty: string;
-}
-
-
-
-export type LogLevel = "OFF" | "ERROR" | "WARN" | "INFO" | "DEBUG" | "TRACE";
+// Map from witness index to hex string value of witness.
+export type WitnessMap = Map<number, string>;
 
 
 
@@ -100,10 +91,28 @@ export type ForeignCallHandler = (name: string, inputs: ForeignCallInput[]) => P
 
 
 
-// Map from witness index to hex string value of witness.
-export type WitnessMap = Map<number, string>;
+/**
+* @typedef {Object} BuildInfo - Information about how the installed package was built
+* @property {string} gitHash - The hash of the git commit from which the package was built. 
+* @property {string} version - The version of the package at the built git commit.
+* @property {boolean} dirty - Whether the package contained uncommitted changes when built.
+ */
+export type BuildInfo = {
+  gitHash: string;
+  version: string;
+  dirty: string;
+}
 
 
+
+export type LogLevel = "OFF" | "ERROR" | "WARN" | "INFO" | "DEBUG" | "TRACE";
+
+
+/**
+*/
+export class SimulatedBackend {
+  free(): void;
+}
 /**
 * A struct representing a Trap
 */
@@ -120,9 +129,11 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly buildInfo: () => number;
+  readonly __wbg_simulatedbackend_free: (a: number) => void;
+  readonly newSimulatedBackend: () => number;
+  readonly executeCircuit: (a: number, b: number, c: number, d: number, e: number) => number;
   readonly compressWitness: (a: number, b: number) => void;
   readonly decompressWitness: (a: number, b: number, c: number) => void;
-  readonly executeCircuit: (a: number, b: number, c: number, d: number) => number;
   readonly initLogLevel: (a: number) => void;
   readonly getReturnWitness: (a: number, b: number, c: number, d: number) => void;
   readonly getPublicParametersWitness: (a: number, b: number, c: number, d: number) => void;
@@ -132,11 +143,11 @@ export interface InitOutput {
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h18056f46f15b032f: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__haa6bd105dfd52e9c: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
-  readonly wasm_bindgen__convert__closures__invoke2_mut__h10c7a4363b59f792: (a: number, b: number, c: number, d: number) => void;
+  readonly wasm_bindgen__convert__closures__invoke2_mut__h50afad692ca50225: (a: number, b: number, c: number, d: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
