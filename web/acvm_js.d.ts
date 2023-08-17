@@ -34,10 +34,15 @@ export function getPublicParametersWitness(circuit: Uint8Array, solved_witness: 
 */
 export function getReturnWitness(circuit: Uint8Array, witness_map: WitnessMap): WitnessMap;
 /**
-* Returns the `BuildInfo` object containing information about how the installed package was built.
-* @returns {BuildInfo} - Information on how the installed package was built.
+* Executes an ACIR circuit to generate the solved witness from the initial witness.
+*
+* @param {&WasmBlackBoxFunctionSolver} solver - A black box solver.
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} initial_witness - The initial witness map defining all of the inputs to `circuit`..
+* @param {ForeignCallHandler} foreign_call_handler - A callback to process any foreign calls from the circuit.
+* @returns {WitnessMap} The solved witness calculated by executing the circuit on the provided inputs.
 */
-export function buildInfo(): BuildInfo;
+export function executeCircuitWithBlackBoxSolver(solver: WasmBlackBoxFunctionSolver, circuit: Uint8Array, initial_witness: WitnessMap, foreign_call_handler: ForeignCallHandler): Promise<WitnessMap>;
 /**
 * Executes an ACIR circuit to generate the solved witness from the initial witness.
 *
@@ -46,11 +51,11 @@ export function buildInfo(): BuildInfo;
 * @param {ForeignCallHandler} foreign_call_handler - A callback to process any foreign calls from the circuit.
 * @returns {WitnessMap} The solved witness calculated by executing the circuit on the provided inputs.
 */
-export function executeCircuit(backend: SimulatedBackend, circuit: Uint8Array, initial_witness: WitnessMap, foreign_call_handler: ForeignCallHandler): Promise<WitnessMap>;
+export function executeCircuit(circuit: Uint8Array, initial_witness: WitnessMap, foreign_call_handler: ForeignCallHandler): Promise<WitnessMap>;
 /**
-* @returns {Promise<SimulatedBackend>}
+* @returns {Promise<WasmBlackBoxFunctionSolver>}
 */
-export function createBackend(): Promise<SimulatedBackend>;
+export function createBlackBoxSolver(): Promise<WasmBlackBoxFunctionSolver>;
 /**
 * Decompresses a compressed witness as outputted by Nargo into a `WitnessMap`.
 *
@@ -65,6 +70,11 @@ export function decompressWitness(compressed_witness: Uint8Array): WitnessMap;
 * @returns {WitnessMap} A compressed witness map
 */
 export function compressWitness(witness_map: WitnessMap): Uint8Array;
+/**
+* Returns the `BuildInfo` object containing information about how the installed package was built.
+* @returns {BuildInfo} - Information on how the installed package was built.
+*/
+export function buildInfo(): BuildInfo;
 /**
 * Sets the package's logging level.
 *
@@ -109,11 +119,6 @@ export type LogLevel = "OFF" | "ERROR" | "WARN" | "INFO" | "DEBUG" | "TRACE";
 
 
 /**
-*/
-export class SimulatedBackend {
-  free(): void;
-}
-/**
 * A struct representing a Trap
 */
 export class Trap {
@@ -123,6 +128,11 @@ export class Trap {
 */
   static __wbgd_downcast_token(): Symbol;
 }
+/**
+*/
+export class WasmBlackBoxFunctionSolver {
+  free(): void;
+}
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -131,12 +141,13 @@ export interface InitOutput {
   readonly getPublicWitness: (a: number, b: number, c: number, d: number) => void;
   readonly getPublicParametersWitness: (a: number, b: number, c: number, d: number) => void;
   readonly getReturnWitness: (a: number, b: number, c: number, d: number) => void;
-  readonly buildInfo: () => number;
-  readonly executeCircuit: (a: number, b: number, c: number, d: number, e: number) => number;
-  readonly createBackend: () => number;
-  readonly __wbg_simulatedbackend_free: (a: number) => void;
+  readonly executeCircuitWithBlackBoxSolver: (a: number, b: number, c: number, d: number, e: number) => number;
+  readonly executeCircuit: (a: number, b: number, c: number, d: number) => number;
+  readonly createBlackBoxSolver: () => number;
+  readonly __wbg_wasmblackboxfunctionsolver_free: (a: number) => void;
   readonly decompressWitness: (a: number, b: number, c: number) => void;
   readonly compressWitness: (a: number, b: number) => void;
+  readonly buildInfo: () => number;
   readonly initLogLevel: (a: number) => void;
   readonly __wbg_trap_free: (a: number) => void;
   readonly trap___wbgd_downcast_token: () => number;

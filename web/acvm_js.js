@@ -316,15 +316,6 @@ export function getReturnWitness(circuit, witness_map) {
     }
 }
 
-/**
-* Returns the `BuildInfo` object containing information about how the installed package was built.
-* @returns {BuildInfo} - Information on how the installed package was built.
-*/
-export function buildInfo() {
-    const ret = wasm.buildInfo();
-    return takeObject(ret);
-}
-
 function _assertClass(instance, klass) {
     if (!(instance instanceof klass)) {
         throw new Error(`expected instance of ${klass.name}`);
@@ -334,24 +325,40 @@ function _assertClass(instance, klass) {
 /**
 * Executes an ACIR circuit to generate the solved witness from the initial witness.
 *
+* @param {&WasmBlackBoxFunctionSolver} solver - A black box solver.
 * @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
 * @param {WitnessMap} initial_witness - The initial witness map defining all of the inputs to `circuit`..
 * @param {ForeignCallHandler} foreign_call_handler - A callback to process any foreign calls from the circuit.
 * @returns {WitnessMap} The solved witness calculated by executing the circuit on the provided inputs.
 */
-export function executeCircuit(backend, circuit, initial_witness, foreign_call_handler) {
-    _assertClass(backend, SimulatedBackend);
+export function executeCircuitWithBlackBoxSolver(solver, circuit, initial_witness, foreign_call_handler) {
+    _assertClass(solver, WasmBlackBoxFunctionSolver);
     const ptr0 = passArray8ToWasm0(circuit, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.executeCircuit(backend.__wbg_ptr, ptr0, len0, addHeapObject(initial_witness), addHeapObject(foreign_call_handler));
+    const ret = wasm.executeCircuitWithBlackBoxSolver(solver.__wbg_ptr, ptr0, len0, addHeapObject(initial_witness), addHeapObject(foreign_call_handler));
     return takeObject(ret);
 }
 
 /**
-* @returns {Promise<SimulatedBackend>}
+* Executes an ACIR circuit to generate the solved witness from the initial witness.
+*
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} initial_witness - The initial witness map defining all of the inputs to `circuit`..
+* @param {ForeignCallHandler} foreign_call_handler - A callback to process any foreign calls from the circuit.
+* @returns {WitnessMap} The solved witness calculated by executing the circuit on the provided inputs.
 */
-export function createBackend() {
-    const ret = wasm.createBackend();
+export function executeCircuit(circuit, initial_witness, foreign_call_handler) {
+    const ptr0 = passArray8ToWasm0(circuit, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.executeCircuit(ptr0, len0, addHeapObject(initial_witness), addHeapObject(foreign_call_handler));
+    return takeObject(ret);
+}
+
+/**
+* @returns {Promise<WasmBlackBoxFunctionSolver>}
+*/
+export function createBlackBoxSolver() {
+    const ret = wasm.createBlackBoxSolver();
     return takeObject(ret);
 }
 
@@ -409,6 +416,15 @@ export function compressWitness(witness_map) {
 }
 
 /**
+* Returns the `BuildInfo` object containing information about how the installed package was built.
+* @returns {BuildInfo} - Information on how the installed package was built.
+*/
+export function buildInfo() {
+    const ret = wasm.buildInfo();
+    return takeObject(ret);
+}
+
+/**
 * Sets the package's logging level.
 *
 * @param {LogLevel} level - The maximum level of logging to be emitted.
@@ -424,34 +440,10 @@ function handleError(f, args) {
         wasm.__wbindgen_exn_store(addHeapObject(e));
     }
 }
-function __wbg_adapter_141(arg0, arg1, arg2, arg3) {
+function __wbg_adapter_142(arg0, arg1, arg2, arg3) {
     wasm.wasm_bindgen__convert__closures__invoke2_mut__h27f35f552d73468c(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
 
-/**
-*/
-export class SimulatedBackend {
-
-    static __wrap(ptr) {
-        ptr = ptr >>> 0;
-        const obj = Object.create(SimulatedBackend.prototype);
-        obj.__wbg_ptr = ptr;
-
-        return obj;
-    }
-
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-
-        return ptr;
-    }
-
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_simulatedbackend_free(ptr);
-    }
-}
 /**
 * A struct representing a Trap
 */
@@ -474,6 +466,30 @@ export class Trap {
     static __wbgd_downcast_token() {
         const ret = wasm.trap___wbgd_downcast_token();
         return takeObject(ret);
+    }
+}
+/**
+*/
+export class WasmBlackBoxFunctionSolver {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(WasmBlackBoxFunctionSolver.prototype);
+        obj.__wbg_ptr = ptr;
+
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_wasmblackboxfunctionsolver_free(ptr);
     }
 }
 
@@ -527,14 +543,6 @@ function __wbg_get_imports() {
         const ret = getObject(arg0);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_string_get = function(arg0, arg1) {
-        const obj = getObject(arg1);
-        const ret = typeof(obj) === 'string' ? obj : undefined;
-        var ptr1 = isLikeNone(ret) ? 0 : passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        var len1 = WASM_VECTOR_LEN;
-        getInt32Memory0()[arg0 / 4 + 1] = len1;
-        getInt32Memory0()[arg0 / 4 + 0] = ptr1;
-    };
     imports.wbg.__wbg_new_01e6c9a2ae34b050 = function() {
         const ret = new Map();
         return addHeapObject(ret);
@@ -543,12 +551,24 @@ function __wbg_get_imports() {
         const ret = arg0;
         return addHeapObject(ret);
     };
+    imports.wbg.__wbindgen_string_get = function(arg0, arg1) {
+        const obj = getObject(arg1);
+        const ret = typeof(obj) === 'string' ? obj : undefined;
+        var ptr1 = isLikeNone(ret) ? 0 : passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len1 = WASM_VECTOR_LEN;
+        getInt32Memory0()[arg0 / 4 + 1] = len1;
+        getInt32Memory0()[arg0 / 4 + 0] = ptr1;
+    };
+    imports.wbg.__wbindgen_error_new = function(arg0, arg1) {
+        const ret = new Error(getStringFromWasm0(arg0, arg1));
+        return addHeapObject(ret);
+    };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
         const ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_error_new = function(arg0, arg1) {
-        const ret = new Error(getStringFromWasm0(arg0, arg1));
+    imports.wbg.__wbg_wasmblackboxfunctionsolver_new = function(arg0) {
+        const ret = WasmBlackBoxFunctionSolver.__wrap(arg0);
         return addHeapObject(ret);
     };
     imports.wbg.__wbindgen_is_string = function(arg0) {
@@ -562,10 +582,6 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_is_undefined = function(arg0) {
         const ret = getObject(arg0) === undefined;
         return ret;
-    };
-    imports.wbg.__wbg_simulatedbackend_new = function(arg0) {
-        const ret = SimulatedBackend.__wrap(arg0);
-        return addHeapObject(ret);
     };
     imports.wbg.__wbindgen_bigint_from_i64 = function(arg0) {
         const ret = arg0;
@@ -805,7 +821,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_141(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_142(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -830,7 +846,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_141(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_142(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -964,8 +980,8 @@ function __wbg_get_imports() {
         const ret = wasm.__wbindgen_export_2;
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper558 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 172, __wbg_adapter_54);
+    imports.wbg.__wbindgen_closure_wrapper571 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 173, __wbg_adapter_54);
         return addHeapObject(ret);
     };
 
