@@ -1,21 +1,23 @@
 {
   "name": "@noir-lang/acvm_js",
-  "version": "0.23.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/noir-lang/acvm.git"
-  },
   "collaborators": [
     "The Noir Team <team@noir-lang.org>"
   ],
-  "license": "MIT",
-  "main": "./nodejs/acvm_js.js",
-  "types": "./web/acvm_js.d.ts",
-  "module": "./web/acvm_js.js",
+  "version": "0.0.0-be7fafd",
   "files": [
     "nodejs",
     "web",
     "package.json"
   ],
-  "sideEffects": false
+  "main": "./nodejs/acvm_js.js",
+  "types": "./web/acvm_js.d.ts",
+  "module": "./web/acvm_js.js",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/noir-lang/acvm-simulator-wasm.git"
+  },
+  "acvm": {
+    "versionHash": "be7fafd9a1de639b3ad0ee18dd9c3e9c783459ab"
+  }
 }
