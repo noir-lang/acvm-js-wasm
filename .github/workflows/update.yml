@@ -3,7 +3,7 @@ name: Update & Publish
 on:
   workflow_dispatch:
     inputs:
-      acvm-simulator-ref:
+      acvm-js-ref:
         description: The ACVM simulator reference to checkout
         required: false
 
