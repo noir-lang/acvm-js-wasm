@@ -6,19 +6,15 @@
 */
 export function buildInfo(): BuildInfo;
 /**
-* Compresses a `WitnessMap` into the binary format outputted by Nargo.
+* Executes an ACIR circuit to generate the solved witness from the initial witness.
 *
-* @param {Uint8Array} compressed_witness - A witness map.
-* @returns {WitnessMap} A compressed witness map
+* @param {&WasmBlackBoxFunctionSolver} solver - A black box solver.
+* @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
+* @param {WitnessMap} initial_witness - The initial witness map defining all of the inputs to `circuit`..
+* @param {ForeignCallHandler} foreign_call_handler - A callback to process any foreign calls from the circuit.
+* @returns {WitnessMap} The solved witness calculated by executing the circuit on the provided inputs.
 */
-export function compressWitness(witness_map: WitnessMap): Uint8Array;
-/**
-* Decompresses a compressed witness as outputted by Nargo into a `WitnessMap`.
-*
-* @param {Uint8Array} compressed_witness - A compressed witness.
-* @returns {WitnessMap} The decompressed witness map.
-*/
-export function decompressWitness(compressed_witness: Uint8Array): WitnessMap;
+export function executeCircuitWithBlackBoxSolver(solver: WasmBlackBoxFunctionSolver, circuit: Uint8Array, initial_witness: WitnessMap, foreign_call_handler: ForeignCallHandler): Promise<WitnessMap>;
 /**
 * Executes an ACIR circuit to generate the solved witness from the initial witness.
 *
@@ -29,22 +25,40 @@ export function decompressWitness(compressed_witness: Uint8Array): WitnessMap;
 */
 export function executeCircuit(circuit: Uint8Array, initial_witness: WitnessMap, foreign_call_handler: ForeignCallHandler): Promise<WitnessMap>;
 /**
+* @returns {Promise<WasmBlackBoxFunctionSolver>}
+*/
+export function createBlackBoxSolver(): Promise<WasmBlackBoxFunctionSolver>;
+/**
+* Decompresses a compressed witness as outputted by Nargo into a `WitnessMap`.
+*
+* @param {Uint8Array} compressed_witness - A compressed witness.
+* @returns {WitnessMap} The decompressed witness map.
+*/
+export function decompressWitness(compressed_witness: Uint8Array): WitnessMap;
+/**
+* Compresses a `WitnessMap` into the binary format outputted by Nargo.
+*
+* @param {Uint8Array} compressed_witness - A witness map.
+* @returns {WitnessMap} A compressed witness map
+*/
+export function compressWitness(witness_map: WitnessMap): Uint8Array;
+/**
 * Sets the package's logging level.
 *
 * @param {LogLevel} level - The maximum level of logging to be emitted.
 */
 export function initLogLevel(level: LogLevel): void;
 /**
-* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's return values.
+* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public inputs.
 *
 * @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
 * @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
-* @returns {WitnessMap} A witness map containing the circuit's return values.
+* @returns {WitnessMap} A witness map containing the circuit's public inputs.
 * @param {Uint8Array} circuit
-* @param {WitnessMap} witness_map
+* @param {WitnessMap} solved_witness
 * @returns {WitnessMap}
 */
-export function getReturnWitness(circuit: Uint8Array, witness_map: WitnessMap): WitnessMap;
+export function getPublicWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
 /**
 * Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public parameters.
 *
@@ -57,16 +71,16 @@ export function getReturnWitness(circuit: Uint8Array, witness_map: WitnessMap): 
 */
 export function getPublicParametersWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
 /**
-* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's public inputs.
+* Extracts a `WitnessMap` containing the witness indices corresponding to the circuit's return values.
 *
 * @param {Uint8Array} circuit - A serialized representation of an ACIR circuit
 * @param {WitnessMap} witness_map - The completed witness map after executing the circuit.
-* @returns {WitnessMap} A witness map containing the circuit's public inputs.
+* @returns {WitnessMap} A witness map containing the circuit's return values.
 * @param {Uint8Array} circuit
-* @param {WitnessMap} solved_witness
+* @param {WitnessMap} witness_map
 * @returns {WitnessMap}
 */
-export function getPublicWitness(circuit: Uint8Array, solved_witness: WitnessMap): WitnessMap;
+export function getReturnWitness(circuit: Uint8Array, witness_map: WitnessMap): WitnessMap;
 
 /**
 * @typedef {Object} BuildInfo - Information about how the installed package was built
@@ -86,6 +100,11 @@ export type LogLevel = "OFF" | "ERROR" | "WARN" | "INFO" | "DEBUG" | "TRACE";
 
 
 
+// Map from witness index to hex string value of witness.
+export type WitnessMap = Map<number, string>;
+
+
+
 export type ForeignCallInput = string[]
 export type ForeignCallOutput = string | string[]
 
@@ -99,11 +118,6 @@ export type ForeignCallOutput = string | string[]
 export type ForeignCallHandler = (name: string, inputs: ForeignCallInput[]) => Promise<ForeignCallOutput[]>;
 
 
-
-// Map from witness index to hex string value of witness.
-export type WitnessMap = Map<number, string>;
-
-
 /**
 * A struct representing a Trap
 */
@@ -113,4 +127,9 @@ export class Trap {
 * @returns {Symbol}
 */
   static __wbgd_downcast_token(): Symbol;
+}
+/**
+*/
+export class WasmBlackBoxFunctionSolver {
+  free(): void;
 }
